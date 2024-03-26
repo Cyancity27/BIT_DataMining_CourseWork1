@@ -1,0 +1,1358 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    \usepackage{fontspec, xunicode, xltxtra}
+    \setmainfont{Microsoft YaHei}
+    \usepackage{ctex}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Keep aspect ratio if custom image width or height is specified
+    \setkeys{Gin}{keepaspectratio}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Exploratory\_for\_Moives\_Dataset}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \section{Exploratory data analysis and data preprocessing for Moives
+Dataset from Pirated
+Sites}\label{exploratory-data-analysis-and-data-preprocessing-for-moives-dataset-from-pirated-sites}
+
+    \subsection{一 、数据摘要}\label{ux4e00-ux6570ux636eux6458ux8981}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}观察数据集结构}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{n}{movies\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{./movies\PYZus{}dataset.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Unnamed: 0  IMDb-rating appropriate\_for      director downloads      id  \textbackslash{}
+0           0          4.8               R     John Swab       304  372092
+1           1          6.4           TV-PG   Paul Ziller        73  372091
+2           2          5.2               R  Ben Wheatley     1,427  343381
+3           3          8.1             NaN  Venky Atluri     1,549  372090
+4           4          4.6             NaN  Shaji Kailas       657  372089
+
+              industry       language   posted\_date release\_date  run\_time  \textbackslash{}
+0  Hollywood / English        English  20 Feb, 2023  Jan 28 2023       105
+1  Hollywood / English        English  20 Feb, 2023  Feb 05 2023        84
+2  Hollywood / English  English,Hindi  20 Apr, 2021  Jun 18 2021  1h 47min
+3            Tollywood          Hindi  20 Feb, 2023  Feb 17 2023       139
+4            Tollywood          Hindi  20 Feb, 2023  Jan 26 2023       122
+
+                                           storyline  \textbackslash{}
+0  Doc\textbackslash{}r\textbackslash{}n facilitates a fragile truce between th{\ldots}
+1  Caterer\textbackslash{}r\textbackslash{}n Goldy Berry reunites with detectiv{\ldots}
+2  As the world searches for a cure to a disastro{\ldots}
+3  The life of a young man and his struggles agai{\ldots}
+4  A man named Kalidas gets stranded due to the p{\ldots}
+
+                                        title   views                  writer
+0                                Little Dixie   2,794               John Swab
+1  Grilling Season: A Curious Caterer Mystery   1,002  John Christian Plummer
+2                                In the Earth  14,419            Ben Wheatley
+3                                      Vaathi   4,878            Venky Atluri
+4                                       Alone   2,438        Rajesh Jayaraman
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{dtypes}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Unnamed: 0           int64
+IMDb-rating        float64
+appropriate\_for     object
+director            object
+downloads           object
+id                   int64
+industry            object
+language            object
+posted\_date         object
+release\_date        object
+run\_time            object
+storyline           object
+title               object
+views               object
+writer              object
+dtype: object
+\end{Verbatim}
+\end{tcolorbox}
+        
+    从数据集的前几行看，我们可以看到以下属性：
+
+\begin{verbatim}
+IMDb-rating (数值属性): IMDB评分
+appropriate_for (标称属性): 适宜观看的年龄分级
+director (标称属性): 导演
+downloads (数值属性): 下载次数（格式需要处理，含有逗号）
+id (数值属性): 电影的ID
+industry (标称属性): 电影行业/语言
+language (标称属性): 语言
+posted_date (标称属性): 发布日期
+release_date (标称属性): 发布日期
+run_time (数值属性): 运行时间（格式需要处理，混合了小时和分钟）
+storyline (标称属性): 故事情节
+title (标称属性): 标题
+views (数值属性): 观看次数（格式需要处理，含有逗号）
+writer (标称属性): 编剧
+\end{verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 数据清理和转换}
+
+\PY{c+c1}{\PYZsh{} 处理 \PYZsq{}run\PYZus{}time\PYZsq{}：将格式统一转换为分钟，然后转换为数值类型}
+\PY{k}{def} \PY{n+nf}{convert\PYZus{}runtime\PYZus{}to\PYZus{}minutes}\PY{p}{(}\PY{n}{runtime}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n+nb}{isinstance}\PY{p}{(}\PY{n}{runtime}\PY{p}{,} \PY{n+nb}{str}\PY{p}{)}\PY{p}{:}
+        \PY{n}{parts} \PY{o}{=} \PY{n}{runtime}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{minutes} \PY{o}{=} \PY{l+m+mi}{0}
+        \PY{k}{for} \PY{n}{part} \PY{o+ow}{in} \PY{n}{parts}\PY{p}{:}
+            \PY{k}{if} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{h}\PY{l+s+s1}{\PYZsq{}} \PY{o+ow}{in} \PY{n}{part}\PY{p}{:}
+                \PY{n}{minutes\PYZus{}part} \PY{o}{=} \PY{n}{part}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{h}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+                \PY{k}{if} \PY{n}{minutes\PYZus{}part}\PY{p}{:}  \PY{c+c1}{\PYZsh{} 检查字符串是否非空}
+                    \PY{n}{minutes} \PY{o}{+}\PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{minutes\PYZus{}part}\PY{p}{)} \PY{o}{*} \PY{l+m+mi}{60}
+            \PY{k}{elif} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{min}\PY{l+s+s1}{\PYZsq{}} \PY{o+ow}{in} \PY{n}{part}\PY{p}{:}
+                \PY{n}{minutes\PYZus{}part} \PY{o}{=} \PY{n}{part}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{min}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+                \PY{k}{if} \PY{n}{minutes\PYZus{}part}\PY{p}{:}  \PY{c+c1}{\PYZsh{} 检查字符串是否非空}
+                    \PY{n}{minutes} \PY{o}{+}\PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{minutes\PYZus{}part}\PY{p}{)}
+        \PY{k}{return} \PY{n}{minutes}
+    \PY{k}{return} \PY{n}{runtime}
+\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{run\PYZus{}time}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{run\PYZus{}time}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{n}{convert\PYZus{}runtime\PYZus{}to\PYZus{}minutes}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 验证转换后的数据类型}
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{dtypes}\PY{p}{,} \PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(Unnamed: 0           int64
+ IMDb-rating        float64
+ appropriate\_for     object
+ director            object
+ downloads          float64
+ id                   int64
+ industry            object
+ language            object
+ posted\_date         object
+ release\_date        object
+ run\_time           float64
+ storyline           object
+ title               object
+ views              float64
+ writer              object
+ dtype: object,
+    Unnamed: 0  IMDb-rating appropriate\_for      director  downloads      id  \textbackslash{}
+ 0           0          4.8               R     John Swab      304.0  372092
+ 1           1          6.4           TV-PG   Paul Ziller       73.0  372091
+ 2           2          5.2               R  Ben Wheatley     1427.0  343381
+ 3           3          8.1             NaN  Venky Atluri     1549.0  372090
+ 4           4          4.6             NaN  Shaji Kailas      657.0  372089
+
+               industry       language   posted\_date release\_date  run\_time  \textbackslash{}
+ 0  Hollywood / English        English  20 Feb, 2023  Jan 28 2023       NaN
+ 1  Hollywood / English        English  20 Feb, 2023  Feb 05 2023       NaN
+ 2  Hollywood / English  English,Hindi  20 Apr, 2021  Jun 18 2021     107.0
+ 3            Tollywood          Hindi  20 Feb, 2023  Feb 17 2023       NaN
+ 4            Tollywood          Hindi  20 Feb, 2023  Jan 26 2023       NaN
+
+                                            storyline  \textbackslash{}
+ 0  Doc\textbackslash{}r\textbackslash{}n facilitates a fragile truce between th{\ldots}
+ 1  Caterer\textbackslash{}r\textbackslash{}n Goldy Berry reunites with detectiv{\ldots}
+ 2  As the world searches for a cure to a disastro{\ldots}
+ 3  The life of a young man and his struggles agai{\ldots}
+ 4  A man named Kalidas gets stranded due to the p{\ldots}
+
+                                         title    views                  writer
+ 0                                Little Dixie   2794.0               John Swab
+ 1  Grilling Season: A Curious Caterer Mystery   1002.0  John Christian Plummer
+ 2                                In the Earth  14419.0            Ben Wheatley
+ 3                                      Vaathi   4878.0            Venky Atluri
+ 4                                       Alone   2438.0        Rajesh Jayaraman
+)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \#\#\# 1. 标称属性，给出每个可能取值的频数
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 标称属性的频数分析}
+\PY{n}{nominal\PYZus{}columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}for}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{director}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{industry}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{nominal\PYZus{}frequencies} \PY{o}{=} \PY{p}{\PYZob{}}\PY{n}{column}\PY{p}{:} \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)} \PY{k}{for} \PY{n}{column} \PY{o+ow}{in} \PY{n}{nominal\PYZus{}columns}\PY{p}{\PYZcb{}}
+
+\PY{n}{nominal\PYZus{}frequencies}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\{'appropriate\_for': appropriate\_for
+ R                 4384
+ Not Rated         2142
+ PG-13             1968
+ PG                 886
+ TV-14              694
+ TV-MA              406
+ G                  152
+ Unrated            132
+ TV-PG              115
+ TV-G                99
+ TV-Y7               45
+ TV-Y                25
+ Approved             9
+ NC-17                4
+ TV-Y7-FV             3
+ Passed               3
+ MA-17                1
+ TV-13                1
+ Drama                1
+ Drama, Romance       1
+ 18+                  1
+ Name: count, dtype: int64,
+ 'director': director
+ Venky Atluri                                  405
+ Simone Stock                                  403
+ Xavier Manrique                               403
+ John Swab                                     205
+ Neil Jordan                                   205
+                                              {\ldots}
+ Agnieszka Smoczynska                            1
+ Dylan Thomas Ellis                              1
+ Sunil Thakur, Sunil Dhawan, Shivani Thakur      1
+ Suman Mukhopadhyay                              1
+ Shea Sizemore                                   1
+ Name: count, Length: 9672, dtype: int64,
+ 'industry': industry
+ Hollywood / English    14649
+ Bollywood / Indian      2645
+ Tollywood               1172
+ Anime / Kids            1049
+ Wrestling                433
+ Punjabi                  332
+ Stage shows              129
+ Pakistani                 92
+ Dub / Dual Audio          45
+ 3D Movies                  1
+ Name: count, dtype: int64,
+ 'language': language
+ English                                 12657
+ Hindi                                    2558
+ English,Spanish                           391
+ Punjabi                                   310
+ English,Hindi                             304
+                                         {\ldots}
+ English,Korean,Spanish                      1
+ Norwegian,Swedish                           1
+ Spanish,Chinese,English,Maori,French        1
+ Urdu,Punjabi,English                        1
+ Spanish,German,English                      1
+ Name: count, Length: 1167, dtype: int64\}
+\end{Verbatim}
+\end{tcolorbox}
+        
+    从标称属性的频数分析结果不难看出，在该数据集的标称属性中： 1.
+适宜观看年龄(appropriate\_for):\\
+R级最多，共有4384次出现。\\
+未评级(Not Rated)次之，有2142次出现。\\
+其余按出现频次依次是PG-13、PG、TV-14等。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  导演(director):\\
+  Venky Atluri、Simone Stock和Xavier
+  Manrique是出现频率最高的导演，他们的作品数量都超过了400部。\\
+  其他导演的作品数量分布较广，有许多导演只有一部作品出现在数据集中。
+\item
+  产业(industry):\\
+  大部分电影属于好莱坞/英语片区，共有14649部。\\
+  其次是宝莱坞/印度产业，有2645部电影。\\
+  托莱坞、动画/儿童、摔跤等其他类型的产业数量明显较少。
+\item
+  语言(language):\\
+  英语共12657次出现。\\
+  其次是印地语，出现了2558次。\\
+  还有一些电影提供了多语言版本，如英语+西班牙语、英语+印地语等，但数量相对较少
+\end{enumerate}
+
+    \subsubsection{2.
+数值属性，给出5数概括及缺失值的个数}\label{ux6570ux503cux5c5eux6027ux7ed9ux51fa5ux6570ux6982ux62ecux53caux7f3aux5931ux503cux7684ux4e2aux6570}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 数值属性的五数概括及缺失值个数}
+\PY{n}{numerical\PYZus{}columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{IMDb\PYZhy{}rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{downloads}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{id}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{run\PYZus{}time}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{views}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{numerical\PYZus{}summary} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{index}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{min}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{25}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{50}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{75}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{max}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{missing values}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{column} \PY{o+ow}{in} \PY{n}{numerical\PYZus{}columns}\PY{p}{:}
+    \PY{n}{numerical\PYZus{}summary}\PY{p}{[}\PY{n}{column}\PY{p}{]} \PY{o}{=} \PY{p}{[}
+        \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+        \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{quantile}\PY{p}{(}\PY{l+m+mf}{0.25}\PY{p}{)}\PY{p}{,}
+        \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{median}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+        \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{quantile}\PY{p}{(}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{,}
+        \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+        \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{isnull}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+    \PY{p}{]}
+
+\PY{n}{numerical\PYZus{}summary}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                IMDb-rating  downloads         id  run\_time      views
+min                     1.1        0.0       1.00      10.0      667.0
+25\%                     4.8      855.5   96122.25      88.0     7571.5
+50\%                     5.7     2716.0  264457.50      94.0    15222.0
+75\%                     6.6    10070.0  354561.25     104.0    36571.0
+max                     9.9   391272.0  372092.00     271.0  1638533.0
+missing values        841.0        1.0       0.00   15102.0        1.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    数值属性的五数概括及缺失值个数总览如下
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  IMDb评分(IMDb-rating):\\
+  最低1.1，最高9.9，中位数5.7。\\
+  缺失值个数为841。
+\item
+  下载量(downloads):\\
+  范围从0到391,272，中位数为2,716。\\
+  缺失值个数为1。
+\item
+  电影ID(id):\\
+  ID范围从1到372,092，没有缺失值。
+\item
+  时长(run\_time):\\
+  电影时长从10分钟到271分钟不等，中位数为94分钟。\\
+  缺失值个数为15,102，表明许多电影的时长信息缺失。
+\item
+  观看量(views):\\
+  观看量范围从667到1,638,533，中位数为15,222。\\
+  缺失值个数为1。
+\end{enumerate}
+
+    \subsection{二、数据可视化}\label{ux4e8cux6570ux636eux53efux89c6ux5316}
+
+    \subsubsection{1.
+使用直方图检查数据分布}\label{ux4f7fux7528ux76f4ux65b9ux56feux68c0ux67e5ux6570ux636eux5206ux5e03}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{warnings}
+\PY{n}{warnings}\PY{o}{.}\PY{n}{filterwarnings}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ignore}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{category}\PY{o}{=}\PY{n+ne}{Warning}\PY{p}{)} 
+\PY{c+c1}{\PYZsh{} 设置绘图样式}
+\PY{n}{plt}\PY{o}{.}\PY{n}{rcParams}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{font.sans\PYZhy{}serif}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SimHei}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{} 绘制直方图}
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{14}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} IMDb\PYZhy{}rating 直方图}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{hist}\PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{IMDb\PYZhy{}rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{bins}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{skyblue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{edgecolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{black}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{IMDb评分分布}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{IMDb评分}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{电影数量}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} downloads 直方图}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{hist}\PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{downloads}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{bins}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{edgecolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{black}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{下载数分布}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{下载数量（次）}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{电影数量}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} run\PYZus{}time 直方图}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{.}\PY{n}{hist}\PY{p}{(}\PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{run\PYZus{}time}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{bins}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lightgreen}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{edgecolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{black}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{电影时长分布}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{时长（分钟）}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{电影数量}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Exploratory_for_Moives_Dataset_files/Exploratory_for_Moives_Dataset_14_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{verbatim}
+IMDb-rating分布：呈现出相对均匀的分布，大部分电影的评分集中在4到8分之间，少数电影的评分高于8分或低于4分。
+Downloads分布：大部分电影的下载次数较少，但存在少数下载次数非常高的电影，说明一些电影极其受欢迎。
+Run Time分布：大多数电影的运行时间集中在80到140分钟之间，符合一般电影的标准长度。
+\end{verbatim}
+
+    \subsubsection{2.
+使用盒图检查数据离散点}\label{ux4f7fux7528ux76d2ux56feux68c0ux67e5ux6570ux636eux79bbux6563ux70b9}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 绘制盒图}
+\PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{rcParams}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{font.sans\PYZhy{}serif}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{SimHei}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} 2. 使用盒图检查数据离散点}
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{18}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{boxplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{movies\PYZus{}df}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{IMDb\PYZhy{}rating}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{IMDb\PYZhy{}rating 离散点}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{boxplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{movies\PYZus{}df}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{downloads}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Downloads 离散点}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{boxplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{movies\PYZus{}df}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{run\PYZus{}time}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Run Time 离散点}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Exploratory_for_Moives_Dataset_files/Exploratory_for_Moives_Dataset_17_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{verbatim}
+IMDb-rating离散点：盒图显示大多数电影的评分集中在5到7分之间，有一些极端的低评分和高评分电影。
+Downloads离散点：下载次数有较大的离散性，存在一些极端的高下载次数电影。
+Run Time离散点：大多数电影的运行时间比较集中，也有少数极短或极长的电影。
+\end{verbatim}
+
+    \section{三、缺失数据处理}\label{ux4e09ux7f3aux5931ux6570ux636eux5904ux7406}
+
+    \subsubsection{1.
+将缺失部分剔除}\label{ux5c06ux7f3aux5931ux90e8ux5206ux5254ux9664}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 重新加载数据集以获取原始的缺失值情况}
+\PY{n}{movies\PYZus{}df\PYZus{}original} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{./movies\PYZus{}dataset.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 将缺失部分剔除}
+\PY{n}{movies\PYZus{}df\PYZus{}dropped} \PY{o}{=} \PY{n}{movies\PYZus{}df\PYZus{}original}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 显示处理后的数据集的前几行和原数据集的行数对比}
+\PY{p}{(}\PY{n}{movies\PYZus{}df\PYZus{}dropped}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{movies\PYZus{}df\PYZus{}original}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{movies\PYZus{}df\PYZus{}dropped}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(   Unnamed: 0  IMDb-rating appropriate\_for        director downloads      id  \textbackslash{}
+ 0           0          4.8               R       John Swab       304  372092
+ 1           1          6.4           TV-PG     Paul Ziller        73  372091
+ 2           2          5.2               R    Ben Wheatley     1,427  343381
+ 7           7          6.5               R  Benjamin Caron     1,781  371751
+ 8           8          6.9           PG-13     Ravi Kapoor       458  372042
+
+               industry       language   posted\_date release\_date  run\_time  \textbackslash{}
+ 0  Hollywood / English        English  20 Feb, 2023  Jan 28 2023       105
+ 1  Hollywood / English        English  20 Feb, 2023  Feb 05 2023        84
+ 2  Hollywood / English  English,Hindi  20 Apr, 2021  Jun 18 2021  1h 47min
+ 7  Hollywood / English        English  13 Feb, 2023  Feb 17 2023       116
+ 8  Hollywood / English        English  18 Feb, 2023  Dec 02 2022        80
+
+                                            storyline  \textbackslash{}
+ 0  Doc\textbackslash{}r\textbackslash{}n facilitates a fragile truce between th{\ldots}
+ 1  Caterer\textbackslash{}r\textbackslash{}n Goldy Berry reunites with detectiv{\ldots}
+ 2  As the world searches for a cure to a disastro{\ldots}
+ 7  Motivations are suspect, and expectations are {\ldots}
+ 8  An\textbackslash{}r\textbackslash{}n unmotivated South Asian American rapper{\ldots}
+
+                                         title   views  \textbackslash{}
+ 0                                Little Dixie   2,794
+ 1  Grilling Season: A Curious Caterer Mystery   1,002
+ 2                                In the Earth  14,419
+ 7                                     Sharper  18,225
+ 8                                Four Samosas   6,912
+
+                               writer
+ 0                          John Swab
+ 1             John Christian Plummer
+ 2                       Ben Wheatley
+ 7  Brian Gatewood, Alessandro Tanaka
+ 8                        Ravi Kapoor  ,
+ 20548,
+ 9902)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    剔除包含缺失值的行之前，原始数据集中有20,548行，处理后剩下9902行
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 计算重新加载的数据集中每列缺失值的数量}
+\PY{n}{missing\PYZus{}values\PYZus{}per\PYZus{}column\PYZus{}original} \PY{o}{=} \PY{n}{movies\PYZus{}df\PYZus{}original}\PY{o}{.}\PY{n}{isnull}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+\PY{n}{missing\PYZus{}values\PYZus{}per\PYZus{}column\PYZus{}original}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Unnamed: 0            0
+IMDb-rating         841
+appropriate\_for    9476
+director           1938
+downloads             1
+id                    0
+industry              1
+language            546
+posted\_date           1
+release\_date          1
+run\_time           1768
+storyline          1701
+title                 1
+views                 1
+writer             2192
+dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    可以看见在所有的含有缺失值的数据中''apppriate\_for''属性列的占比高达
+89\%\\
+因此盲目的直接去除所有含有缺失值的行会使得样本空间大大减少\\
+所以我们要对其进行二次处理
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{80}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 计算 appropriate\PYZus{}for 的值计数}
+\PY{n}{appropriate\PYZus{}count\PYZus{}series} \PY{o}{=} \PY{n}{movies\PYZus{}df\PYZus{}original}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}for}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 将 Series 转换为 DataFrame}
+\PY{n}{appropriate\PYZus{}count\PYZus{}df} \PY{o}{=} \PY{n}{appropriate\PYZus{}count\PYZus{}series}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 重命名列}
+\PY{n}{appropriate\PYZus{}count\PYZus{}df}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}for}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} 根据计数列排序}
+\PY{n}{appropriate\PYZus{}count\PYZus{}sorted} \PY{o}{=} \PY{n}{appropriate\PYZus{}count\PYZus{}df}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{81}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{mov\PYZus{}data\PYZus{}cleaned} \PY{o}{=} \PY{n}{movies\PYZus{}df\PYZus{}original}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{p}{)}
+\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{18+}\PY{l+s+s1}{\PYZsq{}} \PY{o+ow}{in} \PY{n+nb}{list}\PY{p}{(}\PY{n}{mov\PYZus{}data\PYZus{}cleaned}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}for}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{index}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{81}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+True
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{82}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{appropriate\PYZus{}count\PYZus{}cleaned} \PY{o}{=} \PY{n}{appropriate\PYZus{}count}
+\PY{n}{appropriate\PYZus{}count\PYZus{}cleaned}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}count\PYZus{}cleaned}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{*} \PY{n+nb}{len}\PY{p}{(}\PY{n}{appropriate\PYZus{}count}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{level} \PY{o+ow}{in} \PY{n+nb}{list}\PY{p}{(}\PY{n}{appropriate\PYZus{}count}\PY{o}{.}\PY{n}{index}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{level} \PY{o+ow}{in} \PY{n+nb}{list}\PY{p}{(}\PY{n}{mov\PYZus{}data\PYZus{}cleaned}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}for}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{index}\PY{p}{)}\PY{p}{:}
+        \PY{n}{appropriate\PYZus{}count\PYZus{}cleaned}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{[}\PY{n}{level}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}count\PYZus{}cleaned}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]} \PY{o}{=} \PY{n}{mov\PYZus{}data\PYZus{}cleaned}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}for}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{[}\PY{n}{level}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{values}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{83}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{appropriate\PYZus{}count\PYZus{}cleaned}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{83}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             count  count  appropriate\_count\_cleaned
+0                R   4384                          0
+1        Not Rated   2142                          0
+2            PG-13   1968                          0
+3               PG    886                          0
+4            TV-14    694                          0
+5            TV-MA    406                          0
+6                G    152                          0
+7          Unrated    132                          0
+8            TV-PG    115                          0
+9             TV-G     99                          0
+10           TV-Y7     45                          0
+11            TV-Y     25                          0
+12        Approved      9                          0
+13           NC-17      4                          0
+14        TV-Y7-FV      3                          0
+15          Passed      3                          0
+16           MA-17      1                          0
+17           TV-13      1                          0
+18           Drama      1                          0
+19  Drama, Romance      1                          0
+20             18+      1                          0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{63}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{copy}
+\PY{k+kn}{from} \PY{n+nn}{numpy} \PY{k+kn}{import} \PY{n}{nan} \PY{k}{as} \PY{n}{NA}
+\PY{n}{HF} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+\PY{n}{mov\PYZus{}data\PYZus{}HF\PYZus{}replaced} \PY{o}{=} \PY{n}{copy}\PY{o}{.}\PY{n}{deepcopy}\PY{p}{(}\PY{n}{movies\PYZus{}df\PYZus{}original}\PY{p}{)}
+\PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{mov\PYZus{}data\PYZus{}HF\PYZus{}replaced}\PY{p}{:}
+    \PY{n}{HF}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n}{mov\PYZus{}data\PYZus{}HF\PYZus{}replaced}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{index}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n}{HF}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{English}\PY{l+s+s1}{\PYZsq{}}
+\PY{n}{HF}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{63}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\{'Unnamed: 0': 0,
+ 'IMDb-rating': 6.6,
+ 'appropriate\_for': 'R',
+ 'director': 'Venky Atluri',
+ 'downloads': '75',
+ 'id': 372090,
+ 'industry': 'Hollywood / English',
+ 'language': 'English',
+ 'posted\_date': '13 Feb, 2023',
+ 'release\_date': 'Jan 01 1970',
+ 'run\_time': '93',
+ 'storyline': 'The life of a young man and his struggles against the
+privatization of education.',
+ 'title': 'The Girl Who Escaped: The Kara Robinson Story',
+ 'views': '6,259',
+ 'writer': 'Nicholas Schutt'\}
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{64}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{mov\PYZus{}data\PYZus{}HF\PYZus{}replaced}\PY{p}{:}
+    \PY{n}{mov\PYZus{}data\PYZus{}HF\PYZus{}replaced}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n}{mov\PYZus{}data\PYZus{}HF\PYZus{}replaced}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{n}{NA}\PY{p}{,} \PY{n}{HF}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{p}{)}
+\PY{n}{mov\PYZus{}data\PYZus{}HF\PYZus{}replaced}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{64}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Unnamed: 0         0
+IMDb-rating        0
+appropriate\_for    0
+director           0
+downloads          0
+id                 0
+industry           0
+language           0
+posted\_date        0
+release\_date       0
+run\_time           0
+storyline          0
+title              0
+views              0
+writer             0
+dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{mov\PYZus{}data\PYZus{}HF\PYZus{}replaced}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Unnamed: 0  IMDb-rating appropriate\_for            director downloads  \textbackslash{}
+0           0          4.8               R           John Swab       304
+1           1          6.4           TV-PG         Paul Ziller        73
+2           2          5.2               R        Ben Wheatley     1,427
+3           3          8.1               R        Venky Atluri     1,549
+4           4          4.6               R        Shaji Kailas       657
+5           5          5.4               R  Srinivas Gavireddy       746
+6           6          6.6           TV-PG        Venky Atluri     5,332
+7           7          6.5               R      Benjamin Caron     1,781
+8           8          6.9           PG-13         Ravi Kapoor       458
+9           9          4.2               R        Danny LeGare     1,965
+
+       id             industry       language   posted\_date release\_date  \textbackslash{}
+0  372092  Hollywood / English        English  20 Feb, 2023  Jan 28 2023
+1  372091  Hollywood / English        English  20 Feb, 2023  Feb 05 2023
+2  343381  Hollywood / English  English,Hindi  20 Apr, 2021  Jun 18 2021
+3  372090            Tollywood          Hindi  20 Feb, 2023  Feb 17 2023
+4  372089            Tollywood          Hindi  20 Feb, 2023  Jan 26 2023
+5  372088            Tollywood          Hindi  20 Feb, 2023  Nov 26 2021
+6  372059            Wrestling        English  19 Feb, 2023  Feb 18 2023
+7  371751  Hollywood / English        English  13 Feb, 2023  Feb 17 2023
+8  372042  Hollywood / English        English  18 Feb, 2023  Dec 02 2022
+9  372041  Hollywood / English        English  18 Feb, 2023  Feb 07 2023
+
+   run\_time                                          storyline  \textbackslash{}
+0       105  Doc\textbackslash{}r\textbackslash{}n facilitates a fragile truce between th{\ldots}
+1        84  Caterer\textbackslash{}r\textbackslash{}n Goldy Berry reunites with detectiv{\ldots}
+2  1h 47min  As the world searches for a cure to a disastro{\ldots}
+3       139  The life of a young man and his struggles agai{\ldots}
+4       122  A man named Kalidas gets stranded due to the p{\ldots}
+5       131  Bagaram,\textbackslash{}r\textbackslash{}n after inheriting his grandfather'{\ldots}
+6       200  Undisputed\textbackslash{}r\textbackslash{}n WWE Universal title: Reigns vs {\ldots}
+7       116  Motivations are suspect, and expectations are {\ldots}
+8        80  An\textbackslash{}r\textbackslash{}n unmotivated South Asian American rapper{\ldots}
+9        80  A\textbackslash{}r\textbackslash{}n family moves back to a farm in the mothe{\ldots}
+
+                                        title   views  \textbackslash{}
+0                                Little Dixie   2,794
+1  Grilling Season: A Curious Caterer Mystery   1,002
+2                                In the Earth  14,419
+3                                      Vaathi   4,878
+4                                       Alone   2,438
+5                           Anubhavinchu Raja   2,940
+6                     WWE Elimination Chamber  11,978
+7                                     Sharper  18,225
+8                                Four Samosas   6,912
+9                               Blood Harvest   9,710
+
+                                          writer
+0                                      John Swab
+1                         John Christian Plummer
+2                                   Ben Wheatley
+3                                   Venky Atluri
+4                               Rajesh Jayaraman
+5             Srinivas Gavireddy, Mayukh Adithya
+6                                Nicholas Schutt
+7              Brian Gatewood, Alessandro Tanaka
+8                                    Ravi Kapoor
+9  Michael Hultquist, Danny LeGare, Seth Metoyer
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{66}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{mov\PYZus{}data\PYZus{}HF\PYZus{}replaced}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}for}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{66}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+appropriate\_for
+R                 13860
+Not Rated          2142
+PG-13              1968
+PG                  886
+TV-14               694
+TV-MA               406
+G                   152
+Unrated             132
+TV-PG               115
+TV-G                 99
+TV-Y7                45
+TV-Y                 25
+Approved              9
+NC-17                 4
+TV-Y7-FV              3
+Passed                3
+MA-17                 1
+TV-13                 1
+Drama                 1
+Drama, Romance        1
+18+                   1
+Name: count, dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \subsubsection{2.
+用最高频率值来填补缺失值除}\label{ux7528ux6700ux9ad8ux9891ux7387ux503cux6765ux586bux8865ux7f3aux5931ux503cux9664}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 用最高频率值来填补缺失值}
+\PY{k}{for} \PY{n}{column} \PY{o+ow}{in} \PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{columns}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} 获取最高频率的值（众数）}
+    \PY{n}{most\PYZus{}frequent\PYZus{}value} \PY{o}{=} \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{mode}\PY{p}{(}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+    \PY{c+c1}{\PYZsh{} 填补缺失值}
+    \PY{n}{movies\PYZus{}df}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{fillna}\PY{p}{(}\PY{n}{most\PYZus{}frequent\PYZus{}value}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 显示处理后的数据集的前几行}
+\PY{n}{movies\PYZus{}df}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Unnamed: 0  IMDb-rating appropriate\_for      director  downloads      id  \textbackslash{}
+0           0          4.8               R     John Swab      304.0  372092
+1           1          6.4           TV-PG   Paul Ziller       73.0  372091
+2           2          5.2               R  Ben Wheatley     1427.0  343381
+3           3          8.1               R  Venky Atluri     1549.0  372090
+4           4          4.6               R  Shaji Kailas      657.0  372089
+
+              industry       language   posted\_date release\_date  run\_time  \textbackslash{}
+0  Hollywood / English        English  20 Feb, 2023  Jan 28 2023      90.0
+1  Hollywood / English        English  20 Feb, 2023  Feb 05 2023      90.0
+2  Hollywood / English  English,Hindi  20 Apr, 2021  Jun 18 2021     107.0
+3            Tollywood          Hindi  20 Feb, 2023  Feb 17 2023      90.0
+4            Tollywood          Hindi  20 Feb, 2023  Jan 26 2023      90.0
+
+                                           storyline  \textbackslash{}
+0  Doc\textbackslash{}r\textbackslash{}n facilitates a fragile truce between th{\ldots}
+1  Caterer\textbackslash{}r\textbackslash{}n Goldy Berry reunites with detectiv{\ldots}
+2  As the world searches for a cure to a disastro{\ldots}
+3  The life of a young man and his struggles agai{\ldots}
+4  A man named Kalidas gets stranded due to the p{\ldots}
+
+                                        title    views                  writer
+0                                Little Dixie   2794.0               John Swab
+1  Grilling Season: A Curious Caterer Mystery   1002.0  John Christian Plummer
+2                                In the Earth  14419.0            Ben Wheatley
+3                                      Vaathi   4878.0            Venky Atluri
+4                                       Alone   2438.0        Rajesh Jayaraman
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \subsubsection{3.
+通过属性的相关关系来填补缺失值}\label{ux901aux8fc7ux5c5eux6027ux7684ux76f8ux5173ux5173ux7cfbux6765ux586bux8865ux7f3aux5931ux503c}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{90}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{n}{mov\PYZus{}data\PYZus{}attr\PYZus{}corr} \PY{o}{=} \PY{n}{copy}\PY{o}{.}\PY{n}{deepcopy}\PY{p}{(}\PY{n}{movies\PYZus{}df\PYZus{}original}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{91}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}coded} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{get\PYZus{}dummies}\PY{p}{(}\PY{n}{mov\PYZus{}data\PYZus{}attr\PYZus{}corr}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{appropriate\PYZus{}for}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{dummy\PYZus{}na}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{drop\PYZus{}first}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{df\PYZus{}coded}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{91}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   Unnamed: 0  IMDb-rating      director downloads      id  \textbackslash{}
+0           0          4.8     John Swab       304  372092
+1           1          6.4   Paul Ziller        73  372091
+2           2          5.2  Ben Wheatley     1,427  343381
+3           3          8.1  Venky Atluri     1,549  372090
+4           4          4.6  Shaji Kailas       657  372089
+
+              industry       language   posted\_date release\_date  run\_time  \textbackslash{}
+0  Hollywood / English        English  20 Feb, 2023  Jan 28 2023       105
+1  Hollywood / English        English  20 Feb, 2023  Feb 05 2023        84
+2  Hollywood / English  English,Hindi  20 Apr, 2021  Jun 18 2021  1h 47min
+3            Tollywood          Hindi  20 Feb, 2023  Feb 17 2023       139
+4            Tollywood          Hindi  20 Feb, 2023  Jan 26 2023       122
+
+   {\ldots} appropriate\_for\_TV-13 appropriate\_for\_TV-14 appropriate\_for\_TV-G  \textbackslash{}
+0  {\ldots}                 False                 False                False
+1  {\ldots}                 False                 False                False
+2  {\ldots}                 False                 False                False
+3  {\ldots}                 False                 False                False
+4  {\ldots}                 False                 False                False
+
+  appropriate\_for\_TV-MA  appropriate\_for\_TV-PG  appropriate\_for\_TV-Y  \textbackslash{}
+0                 False                  False                 False
+1                 False                   True                 False
+2                 False                  False                 False
+3                 False                  False                 False
+4                 False                  False                 False
+
+   appropriate\_for\_TV-Y7  appropriate\_for\_TV-Y7-FV  appropriate\_for\_Unrated  \textbackslash{}
+0                  False                     False                    False
+1                  False                     False                    False
+2                  False                     False                    False
+3                  False                     False                    False
+4                  False                     False                    False
+
+   appropriate\_for\_nan
+0                False
+1                False
+2                False
+3                 True
+4                 True
+
+[5 rows x 35 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{92}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 从 df\PYZus{}coded 中排除非数值型列}
+\PY{n}{df\PYZus{}coded\PYZus{}numeric} \PY{o}{=} \PY{n}{df\PYZus{}coded}\PY{o}{.}\PY{n}{select\PYZus{}dtypes}\PY{p}{(}\PY{n}{include}\PY{o}{=}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{number}\PY{p}{]}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 对数值型数据计算斯皮尔曼相关系数}
+\PY{n}{corr\PYZus{}matrix} \PY{o}{=} \PY{n}{df\PYZus{}coded\PYZus{}numeric}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{n}{method}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{spearman}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 显示相关系数矩阵}
+\PY{n}{corr\PYZus{}matrix}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{92}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Unnamed: 0  IMDb-rating        id
+Unnamed: 0     1.000000     0.048519 -0.747947
+IMDb-rating    0.048519     1.000000  0.065239
+id            -0.747947     0.065239  1.000000
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{94}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 假设 df\PYZus{}coded\PYZus{}numeric 是之前步骤中筛选出的只包含数值型数据的 DataFrame}
+\PY{n}{df\PYZus{}coded\PYZus{}numeric} \PY{o}{=} \PY{n}{df\PYZus{}coded}\PY{o}{.}\PY{n}{select\PYZus{}dtypes}\PY{p}{(}\PY{n}{include}\PY{o}{=}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{number}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 计算相关系数矩阵}
+\PY{n}{corr\PYZus{}matrix} \PY{o}{=} \PY{n}{df\PYZus{}coded\PYZus{}numeric}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{n}{method}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{spearman}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 绘制热力图}
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{corr\PYZus{}matrix}\PY{p}{,} \PY{n}{annot}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{fmt}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.2f}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{coolwarm}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{square}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{cbar\PYZus{}kws}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{shrink}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mf}{.5}\PY{p}{\PYZcb{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Spearman Correlation Heatmap}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xticks}\PY{p}{(}\PY{n}{rotation}\PY{o}{=}\PY{l+m+mi}{45}\PY{p}{,} \PY{n}{ha}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{right}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{yticks}\PY{p}{(}\PY{n}{rotation}\PY{o}{=}\PY{l+m+mi}{45}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Exploratory_for_Moives_Dataset_files/Exploratory_for_Moives_Dataset_40_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}

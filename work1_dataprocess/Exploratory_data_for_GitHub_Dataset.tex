@@ -1,0 +1,1423 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    \usepackage{fontspec, xunicode, xltxtra}
+    \setmainfont{Microsoft YaHei}
+    \usepackage{ctex}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Keep aspect ratio if custom image width or height is specified
+    \setkeys{Gin}{keepaspectratio}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Exploratory\_data\_for\_GitHub\_Dataset}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \section{Exploratory data analysis and data preprocessing for GitHub
+Dataset}\label{exploratory-data-analysis-and-data-preprocessing-for-github-dataset}
+
+    \subsection{一 、数据摘要}\label{ux4e00-ux6570ux636eux6458ux8981}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 首先导入相关包，观察数据结构}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{numpy}  \PY{k}{as} \PY{n+nn}{np}
+
+\PY{n}{target\PYZus{}data} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{./github\PYZus{}dataset.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{target\PYZus{}data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                repositories  stars\_count  forks\_count  issues\_count  \textbackslash{}
+0        octocat/Hello-World            0            0           612
+1  EddieHubCommunity/support          271          150           536
+2             ethereum/aleth            0            0           313
+3      localstack/localstack            0            0           290
+4        education/classroom            0          589           202
+
+   pull\_requests  contributors language
+0            316             2      NaN
+1              6            71      NaN
+2             27           154      C++
+3             30           434   Python
+4             22            67     Ruby
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}单独提出数据的属性列便于观察}
+\PY{n}{target\PYZus{}data\PYZus{}columns} \PY{o}{=} \PY{n}{target\PYZus{}data}\PY{o}{.}\PY{n}{columns}
+\PY{n}{target\PYZus{}data\PYZus{}columns}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Index(['repositories', 'stars\_count', 'forks\_count', 'issues\_count',
+       'pull\_requests', 'contributors', 'language'],
+      dtype='object')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    可以看到数据集已被成功加载，其属性列名称分别代表：\\
+repositories（仓库名称）,stars\_count（星标数）,\\
+forks\_count（分支数）, issues\_count（问题数）,\\
+pull\_requests（拉取请求数）, contributors（贡献者数）,\\
+以及language（编程语言）,从初步观察来看，language列存在缺失值。
+
+    \#\#\# 1. 标称属性，给出每个可能取值的频数
+
+    可以看到，标称属性只有repositories和language这两个，下面统计这两个标称属性的每个可能取值的频数
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 数据摘要：标称属性频数统计}
+\PY{n}{nominal\PYZus{}columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{repositories}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{k}{for} \PY{n}{column} \PY{o+ow}{in} \PY{n}{nominal\PYZus{}columns}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Frequency of }\PY{l+s+si}{\PYZob{}}\PY{n}{column}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{target\PYZus{}data}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{n}{dropna}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Frequency of repositories:
+kameshsampath/ansible-role-rosa-demos         2
+aloisdeniel/bluff                             2
+antoniaandreou/github-slideshow               2
+jgthms/bulma-start                            2
+artkirienko/hlds-docker-dproto                2
+                                             ..
+WhiteHouse/CIOmanagement                      1
+0xCaso/defillama-telegram-bot                 1
+ethereum/blake2b-py                           1
+openfoodfacts/folksonomy\_mobile\_experiment    1
+gamemann/All\_PropHealth                       1
+Name: repositories, Length: 972, dtype: int64
+
+
+Frequency of language:
+JavaScript          253
+Python              155
+NaN                 145
+HTML                 72
+Java                 44
+CSS                  37
+TypeScript           37
+Dart                 36
+Jupyter Notebook     29
+C++                  29
+Ruby                 28
+C                    26
+Shell                25
+PHP                  16
+Go                   15
+Swift                10
+Rust                 10
+C\#                    8
+Objective-C           8
+Kotlin                7
+Makefile              6
+Jinja                 5
+SCSS                  4
+AutoHotkey            3
+Dockerfile            3
+CoffeeScript          3
+Perl                  3
+Solidity              3
+Vim Script            2
+Pawn                  2
+Assembly              2
+PowerShell            2
+Hack                  2
+CodeQL                2
+Vue                   2
+Elixir                2
+Gherkin               1
+QMake                 1
+CMake                 1
+Oz                    1
+Cuda                  1
+QML                   1
+ActionScript          1
+Roff                  1
+HCL                   1
+R                     1
+PureBasic             1
+Smarty                1
+Less                  1
+Svelte                1
+Haskell               1
+SourcePawn            1
+Name: language, dtype: int64
+
+
+    \end{Verbatim}
+
+    \subsubsection{2.
+数值属性，给出5数概括及缺失值的个数}\label{ux6570ux503cux5c5eux6027ux7ed9ux51fa5ux6570ux6982ux62ecux53caux7f3aux5931ux503cux7684ux4e2aux6570}
+
+    除去上面两个标称属性外\\
+对剩下的stars\_count、forks\_count、issues\_count、pull\_requests、contributors\\
+这五个数值属性进行五数概括，并计算缺失值的个数。
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 数值属性五数概括及缺失值个数}
+\PY{n}{numerical\PYZus{}columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{stars\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{forks\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{issues\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{pull\PYZus{}requests}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{contributors}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Numerical columns summaries:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{k}{for} \PY{n}{column} \PY{o+ow}{in} \PY{n}{numerical\PYZus{}columns}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{column}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{target\PYZus{}data}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{describe}\PY{p}{(}\PY{p}{)}\PY{p}{)}   \PY{c+c1}{\PYZsh{}统计数值属性五数概括（最小值、三位四分位数、最大值）}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Missing values: }\PY{l+s+si}{\PYZob{}}\PY{n}{target\PYZus{}data}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{o}{.}\PY{n}{isnull}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{c+c1}{\PYZsh{}统计数值属性缺失值个数}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Numerical columns summaries:
+stars\_count:
+count    1052.000000
+mean       81.976236
+std       170.403116
+min         0.000000
+25\%         1.000000
+50\%        12.000000
+75\%        65.250000
+max       995.000000
+Name: stars\_count, dtype: float64
+Missing values: 0
+
+
+forks\_count:
+count    1052.000000
+mean       53.884981
+std       127.699729
+min         0.000000
+25\%         1.000000
+50\%         6.000000
+75\%        38.250000
+max       973.000000
+Name: forks\_count, dtype: float64
+Missing values: 0
+
+
+issues\_count:
+count    1052.000000
+mean        8.656844
+std        32.445154
+min         1.000000
+25\%         1.000000
+50\%         2.000000
+75\%         6.000000
+max       612.000000
+Name: issues\_count, dtype: float64
+Missing values: 0
+
+
+pull\_requests:
+count    1052.000000
+mean        4.374525
+std        27.913732
+min         0.000000
+25\%         0.000000
+50\%         0.000000
+75\%         2.000000
+max       567.000000
+Name: pull\_requests, dtype: float64
+Missing values: 0
+
+
+contributors:
+count    1052.000000
+mean        8.364068
+std        37.511807
+min         0.000000
+25\%         0.000000
+50\%         2.000000
+75\%         4.000000
+max       658.000000
+Name: contributors, dtype: float64
+Missing values: 0
+
+
+    \end{Verbatim}
+
+    经过上面的简要分析即可得知：\\
+* 标称属性 1.
+repositories列有多个仓库名称，其中部分仓库名称出现频率超过1次，说明数据集中可能包含重复条目。
+2.
+language列展示了不同的编程语言及其出现的频次，总计共145条记录的编程语言信息缺失。
+* 数值属性 1.
+stars\_count：最小值0，第一四分位数1，中位数12，第三四分位数65.25，最大值995，无缺失值。
+2.
+forks\_count：最小值0，第一四分位数1，中位数6，第三四分位数38.25，最大值973，无缺失值。
+3.
+issues\_count：最小值1，第一四分位数1，中位数2，第三四分位数6，最大值612，无缺失值。
+4.
+pull\_requests：最小值0，第一四分位数0，中位数0，第三四分位数2，最大值567，无缺失值。
+5.
+contributors：最小值0，第一四分位数0，中位数2，第三四分位数4，最大值658，无缺失值。
+
+    \subsection{二、数据可视化}\label{ux4e8cux6570ux636eux53efux89c6ux5316}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}先导入相关包文件用于后续可视化}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+
+\PY{c+c1}{\PYZsh{} 设置图形风格}
+\PY{n}{sns}\PY{o}{.}\PY{n}{set}\PY{p}{(}\PY{n}{style}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{whitegrid}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \subsubsection{1.
+使用直方图检查数据分布}\label{ux4f7fux7528ux76f4ux65b9ux56feux68c0ux67e5ux6570ux636eux5206ux5e03}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{fig}\PY{p}{,} \PY{n}{axs} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 绘制直方图}
+\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{column} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{numerical\PYZus{}columns}\PY{p}{)}\PY{p}{:}
+    \PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{target\PYZus{}data}\PY{p}{,} \PY{n}{x}\PY{o}{=}\PY{n}{column}\PY{p}{,} \PY{n}{kde}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{ax}\PY{o}{=}\PY{n}{axs}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{column}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{ Histogram}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Exploratory_data_for_GitHub_Dataset_files/Exploratory_data_for_GitHub_Dataset_15_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    可以观察到，多数属性呈现右偏分布，\\
+意味着大多数仓库在星标数、分支数等指标上偏低，但存在少数高值的仓库。
+
+    \subsubsection{2.
+使用盒图检查数据离散点}\label{ux4f7fux7528ux76d2ux56feux68c0ux67e5ux6570ux636eux79bbux6563ux70b9}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{fig}\PY{p}{,} \PY{n}{axs} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 绘制盒图}
+\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{column} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{numerical\PYZus{}columns}\PY{p}{)}\PY{p}{:}
+    \PY{n}{sns}\PY{o}{.}\PY{n}{boxplot}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n}{target\PYZus{}data}\PY{p}{[}\PY{n}{column}\PY{p}{]}\PY{p}{,} \PY{n}{ax}\PY{o}{=}\PY{n}{axs}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+    \PY{n}{axs}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{column}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{ Boxplot}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Exploratory_data_for_GitHub_Dataset_files/Exploratory_data_for_GitHub_Dataset_18_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    可以观察到，几乎所有数值属性中都存在离散点，\\
+尤其是在stars\_count、forks\_count和contributors这几个指标上，离散点较为明显，\\
+这表明有些仓库在这些属性上远高于其他大多数仓库
+
+    \section{三、缺失数据处理}\label{ux4e09ux7f3aux5931ux6570ux636eux5904ux7406}
+
+    \subsubsection{1.
+将缺失部分剔除}\label{ux5c06ux7f3aux5931ux90e8ux5206ux5254ux9664}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 1. 剔除含有缺失值的记录}
+\PY{n}{target\PYZus{}data\PYZus{}dropped} \PY{o}{=} \PY{n}{target\PYZus{}data}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{p}{)}
+\PY{n}{target\PYZus{}data\PYZus{}dropped}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                              repositories  stars\_count  forks\_count  \textbackslash{}
+2                           ethereum/aleth            0            0
+3                    localstack/localstack            0            0
+4                      education/classroom            0          589
+5                shobhit97/open-gpstracker            0            0
+6         donnemartin/system-design-primer            0            0
+{\ldots}                                    {\ldots}          {\ldots}          {\ldots}
+1047              Tyriar/canvas-astar.dart            2            1
+1048      ankitkumar70777/github-slideshow            0            0
+1049  aitikgupta/interactive\_cpu\_scheduler            0            5
+1050                gwmccubbin/voting\_dapp           11            5
+1051               gamemann/All\_PropHealth            4            3
+
+      issues\_count  pull\_requests  contributors    language
+2              313             27           154         C++
+3              290             30           434      Python
+4              202             22            67        Ruby
+5              172              0             3        Java
+6              164            164           115      Python
+{\ldots}            {\ldots}            {\ldots}           {\ldots}         {\ldots}
+1047             1              0             0        Dart
+1048             1              0             8        HTML
+1049             1              1             7      Python
+1050             1              0             0  JavaScript
+1051             1              0             0  SourcePawn
+
+[907 rows x 7 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \subsubsection{2.
+用最高频率值来填补缺失值除}\label{ux7528ux6700ux9ad8ux9891ux7387ux503cux6765ux586bux8865ux7f3aux5931ux503cux9664}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 2. 使用最高频率值来填补缺失值}
+\PY{n}{mode\PYZus{}language} \PY{o}{=} \PY{n}{target\PYZus{}data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{mode}\PY{p}{(}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}  \PY{c+c1}{\PYZsh{} 获取最高频率的语言}
+\PY{n}{target\PYZus{}data\PYZus{}filled} \PY{o}{=} \PY{n}{target\PYZus{}data}\PY{o}{.}\PY{n}{fillna}\PY{p}{(}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{mode\PYZus{}language}\PY{p}{\PYZcb{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 显示处理缺失值后的数据集大小变化}
+\PY{n}{original\PYZus{}size} \PY{o}{=} \PY{n}{target\PYZus{}data}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n}{dropped\PYZus{}size} \PY{o}{=} \PY{n}{target\PYZus{}data\PYZus{}dropped}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n}{filled\PYZus{}size} \PY{o}{=} \PY{n}{target\PYZus{}data\PYZus{}filled}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n}{original\PYZus{}size}\PY{p}{,} \PY{n}{dropped\PYZus{}size}\PY{p}{,} \PY{n}{filled\PYZus{}size}\PY{p}{,} \PY{n}{mode\PYZus{}language}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(1052, 907, 1052, 'JavaScript')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{itemize}
+\tightlist
+\item
+  原始数据集大小：1052条记录\\
+\item
+  剔除含有缺失值的记录后：数据集减少到907条记录\\
+\item
+  使用最高频率值填补缺失值后：数据集仍然保持1052条记录，但所有缺失的language值都被填补为最高频率的语言'JavaScript'
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{target\PYZus{}data\PYZus{}filled}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                              repositories  stars\_count  forks\_count  \textbackslash{}
+0                      octocat/Hello-World            0            0
+1                EddieHubCommunity/support          271          150
+2                           ethereum/aleth            0            0
+3                    localstack/localstack            0            0
+4                      education/classroom            0          589
+{\ldots}                                    {\ldots}          {\ldots}          {\ldots}
+1047              Tyriar/canvas-astar.dart            2            1
+1048      ankitkumar70777/github-slideshow            0            0
+1049  aitikgupta/interactive\_cpu\_scheduler            0            5
+1050                gwmccubbin/voting\_dapp           11            5
+1051               gamemann/All\_PropHealth            4            3
+
+      issues\_count  pull\_requests  contributors    language
+0              612            316             2  JavaScript
+1              536              6            71  JavaScript
+2              313             27           154         C++
+3              290             30           434      Python
+4              202             22            67        Ruby
+{\ldots}            {\ldots}            {\ldots}           {\ldots}         {\ldots}
+1047             1              0             0        Dart
+1048             1              0             8        HTML
+1049             1              1             7      Python
+1050             1              0             0  JavaScript
+1051             1              0             0  SourcePawn
+
+[1052 rows x 7 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \subsubsection{3.
+通过属性的相关关系来填补缺失值}\label{ux901aux8fc7ux5c5eux6027ux7684ux76f8ux5173ux5173ux7cfbux6765ux586bux8865ux7f3aux5931ux503c}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{target\PYZus{}data\PYZus{}coded} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{get\PYZus{}dummies}\PY{p}{(}\PY{n}{target\PYZus{}data}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{dummy\PYZus{}na}\PY{o}{=} \PY{k+kc}{True}\PY{p}{,} \PY{n}{drop\PYZus{}first}\PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\PY{n}{target\PYZus{}data\PYZus{}coded}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                              repositories  stars\_count  forks\_count  \textbackslash{}
+0                      octocat/Hello-World            0            0
+1                EddieHubCommunity/support          271          150
+2                           ethereum/aleth            0            0
+3                    localstack/localstack            0            0
+4                      education/classroom            0          589
+{\ldots}                                    {\ldots}          {\ldots}          {\ldots}
+1047              Tyriar/canvas-astar.dart            2            1
+1048      ankitkumar70777/github-slideshow            0            0
+1049  aitikgupta/interactive\_cpu\_scheduler            0            5
+1050                gwmccubbin/voting\_dapp           11            5
+1051               gamemann/All\_PropHealth            4            3
+
+      issues\_count  pull\_requests  contributors  language\_Assembly  \textbackslash{}
+0              612            316             2                  0
+1              536              6            71                  0
+2              313             27           154                  0
+3              290             30           434                  0
+4              202             22            67                  0
+{\ldots}            {\ldots}            {\ldots}           {\ldots}                {\ldots}
+1047             1              0             0                  0
+1048             1              0             8                  0
+1049             1              1             7                  0
+1050             1              0             0                  0
+1051             1              0             0                  0
+
+      language\_AutoHotkey  language\_C  language\_C\#  {\ldots}  language\_Shell  \textbackslash{}
+0                       0           0            0  {\ldots}               0
+1                       0           0            0  {\ldots}               0
+2                       0           0            0  {\ldots}               0
+3                       0           0            0  {\ldots}               0
+4                       0           0            0  {\ldots}               0
+{\ldots}                   {\ldots}         {\ldots}          {\ldots}  {\ldots}             {\ldots}
+1047                    0           0            0  {\ldots}               0
+1048                    0           0            0  {\ldots}               0
+1049                    0           0            0  {\ldots}               0
+1050                    0           0            0  {\ldots}               0
+1051                    0           0            0  {\ldots}               0
+
+      language\_Smarty  language\_Solidity  language\_SourcePawn  \textbackslash{}
+0                   0                  0                    0
+1                   0                  0                    0
+2                   0                  0                    0
+3                   0                  0                    0
+4                   0                  0                    0
+{\ldots}               {\ldots}                {\ldots}                  {\ldots}
+1047                0                  0                    0
+1048                0                  0                    0
+1049                0                  0                    0
+1050                0                  0                    0
+1051                0                  0                    1
+
+      language\_Svelte  language\_Swift  language\_TypeScript  \textbackslash{}
+0                   0               0                    0
+1                   0               0                    0
+2                   0               0                    0
+3                   0               0                    0
+4                   0               0                    0
+{\ldots}               {\ldots}             {\ldots}                  {\ldots}
+1047                0               0                    0
+1048                0               0                    0
+1049                0               0                    0
+1050                0               0                    0
+1051                0               0                    0
+
+      language\_Vim Script  language\_Vue  language\_nan
+0                       0             0             1
+1                       0             0             1
+2                       0             0             0
+3                       0             0             0
+4                       0             0             0
+{\ldots}                   {\ldots}           {\ldots}           {\ldots}
+1047                    0             0             0
+1048                    0             0             0
+1049                    0             0             0
+1050                    0             0             0
+1051                    0             0             0
+
+[1052 rows x 57 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{40}\PY{p}{,} \PY{l+m+mi}{40}\PY{p}{)}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{target\PYZus{}data\PYZus{}coded}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{n}{method}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{spearman}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ocean}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{annot}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Correlation Analysis}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Text(0.5, 1.0, 'Correlation Analysis')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Exploratory_data_for_GitHub_Dataset_files/Exploratory_data_for_GitHub_Dataset_29_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}由上面的热力图不难看出language列与stars\PYZus{}count列的相干性最高}
+\PY{c+c1}{\PYZsh{}因此下面采用基于stars\PYZus{}count字段的平均值差异方法来填补缺失的language值}
+\PY{n}{github\PYZus{}data\PYZus{}attr\PYZus{}corr} \PY{o}{=} \PY{n}{target\PYZus{}data}
+\PY{n}{df1} \PY{o}{=} \PY{n}{github\PYZus{}data\PYZus{}attr\PYZus{}corr}\PY{o}{.}\PY{n}{groupby}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{agg}\PY{p}{(}\PY{n}{avg} \PY{o}{=} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{stars\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mean}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{df1}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                         avg
+language
+ActionScript        3.000000
+Assembly          426.000000
+AutoHotkey        118.333333
+C                 153.076923
+C\#                 43.250000
+C++                39.172414
+CMake              30.000000
+CSS                49.675676
+CodeQL              0.000000
+CoffeeScript        7.333333
+Cuda               14.000000
+Dart               33.944444
+Dockerfile         61.666667
+Elixir             36.000000
+Gherkin             1.000000
+Go                139.600000
+HCL                65.000000
+HTML               54.888889
+Hack               59.500000
+Haskell           126.000000
+Java               83.204545
+JavaScript         87.083004
+Jinja               0.400000
+Jupyter Notebook  130.724138
+Kotlin             26.714286
+Less                0.000000
+Makefile            0.833333
+Objective-C       234.375000
+Oz                 37.000000
+PHP                86.562500
+Pawn               19.000000
+Perl              294.000000
+PowerShell        127.500000
+PureBasic           5.000000
+Python             73.038710
+QML                24.000000
+QMake              16.000000
+R                   1.000000
+Roff                1.000000
+Ruby               25.071429
+Rust               56.400000
+SCSS              228.500000
+Shell              28.600000
+Smarty             28.000000
+Solidity          113.333333
+SourcePawn          4.000000
+Svelte            133.000000
+Swift             152.500000
+TypeScript         70.837838
+Vim Script        602.000000
+Vue               424.500000
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{numpy} \PY{k+kn}{import} \PY{n}{nan} \PY{k}{as} \PY{n}{NA}
+\PY{k+kn}{import} \PY{n+nn}{warnings}
+\PY{n}{warnings}\PY{o}{.}\PY{n}{filterwarnings}\PY{p}{(}\PY{n}{action}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ignore}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{github\PYZus{}data\PYZus{}attr\PYZus{}corr}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{github\PYZus{}data\PYZus{}attr\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o+ow}{is} \PY{n}{NA}\PY{p}{:}
+        \PY{n}{rate} \PY{o}{=} \PY{n}{github\PYZus{}data\PYZus{}attr\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{stars\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+        \PY{n}{dist} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+        \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{df1}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+            \PY{n}{dist}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{df1}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{avg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{rate}\PY{p}{)}\PY{p}{)}
+        \PY{n}{idx} \PY{o}{=} \PY{n}{dist}\PY{o}{.}\PY{n}{index}\PY{p}{(}\PY{n+nb}{min}\PY{p}{(}\PY{n}{dist}\PY{p}{)}\PY{p}{)}
+        \PY{n}{github\PYZus{}data\PYZus{}attr\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{df1}\PY{o}{.}\PY{n}{index}\PY{p}{[}\PY{n}{idx}\PY{p}{]}
+\PY{n}{github\PYZus{}data\PYZus{}attr\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+JavaScript          257
+Python              155
+HTML                 72
+Java                 44
+CSS                  42
+Dart                 38
+TypeScript           38
+C                    34
+CodeQL               33
+C++                  33
+Jupyter Notebook     29
+Ruby                 28
+Shell                25
+PHP                  17
+Go                   17
+Perl                 14
+ActionScript         12
+Swift                10
+Rust                 10
+C\#                   10
+Kotlin               10
+Vim Script            9
+CoffeeScript          9
+Pawn                  8
+Objective-C           8
+Cuda                  7
+Gherkin               7
+SCSS                  7
+Makefile              6
+SourcePawn            6
+AutoHotkey            5
+QMake                 5
+Jinja                 5
+Assembly              4
+PureBasic             4
+Hack                  4
+QML                   3
+CMake                 3
+Dockerfile            3
+HCL                   3
+Solidity              3
+Elixir                2
+Svelte                2
+Smarty                2
+Vue                   2
+PowerShell            2
+R                     1
+Less                  1
+Roff                  1
+Haskell               1
+Oz                    1
+Name: language, dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \subsubsection{4. 通过数据对象之间的相似性来填补缺失值
+(拟使用热卡填充法, i.e.~Hot Deck
+Imputation)}\label{ux901aux8fc7ux6570ux636eux5bf9ux8c61ux4e4bux95f4ux7684ux76f8ux4f3cux6027ux6765ux586bux8865ux7f3aux5931ux503c-ux62dfux4f7fux7528ux70edux5361ux586bux5145ux6cd5-i.e.-hot-deck-imputation}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}这里采用归一化巨鹿来作为相似性度量}
+\PY{c+c1}{\PYZsh{}用这个相似性度量来找到最相似的数据对象}
+
+\PY{c+c1}{\PYZsh{} 选择用于计算相似性的数值属性}
+\PY{n}{attributes} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{stars\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{forks\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{issues\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{pull\PYZus{}requests}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{contributors}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{k}{def} \PY{n+nf}{regularit}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{:}
+    \PY{n}{new\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{index}\PY{o}{=}\PY{n}{df}\PY{o}{.}\PY{n}{index}\PY{p}{)}
+    \PY{k}{for} \PY{n}{c} \PY{o+ow}{in} \PY{n}{attributes}\PY{p}{:}
+        \PY{n}{d} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{c}\PY{p}{]}
+        \PY{n}{MAX} \PY{o}{=} \PY{n}{d}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}
+        \PY{n}{MIN} \PY{o}{=} \PY{n}{d}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}
+        \PY{n}{new\PYZus{}df}\PY{p}{[}\PY{n}{c}\PY{p}{]} \PY{o}{=} \PY{p}{(}\PY{n}{d} \PY{o}{\PYZhy{}} \PY{n}{MIN}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{n}{MAX} \PY{o}{\PYZhy{}} \PY{n}{MIN}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 归一化公式}
+    \PY{k}{return} \PY{n}{new\PYZus{}df}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{github\PYZus{}data\PYZus{}sample\PYZus{}corr} \PY{o}{=} \PY{n}{target\PYZus{}data}
+\PY{n}{normal\PYZus{}github\PYZus{}data} \PY{o}{=} \PY{n}{regularit}\PY{p}{(}\PY{n}{github\PYZus{}data\PYZus{}sample\PYZus{}corr}\PY{p}{)}
+\PY{n}{normal\PYZus{}github\PYZus{}data}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      stars\_count  forks\_count  issues\_count  pull\_requests  contributors
+0        0.000000     0.000000      1.000000       0.557319      0.003040
+1        0.272362     0.154162      0.875614       0.010582      0.107903
+2        0.000000     0.000000      0.510638       0.047619      0.234043
+3        0.000000     0.000000      0.472995       0.052910      0.659574
+4        0.000000     0.605344      0.328969       0.038801      0.101824
+{\ldots}           {\ldots}          {\ldots}           {\ldots}            {\ldots}           {\ldots}
+1047     0.002010     0.001028      0.000000       0.000000      0.000000
+1048     0.000000     0.000000      0.000000       0.000000      0.012158
+1049     0.000000     0.005139      0.000000       0.001764      0.010638
+1050     0.011055     0.005139      0.000000       0.000000      0.000000
+1051     0.004020     0.003083      0.000000       0.000000      0.000000
+
+[1052 rows x 5 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{normal\PYZus{}language} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{concat}\PY{p}{(}\PY{p}{[}\PY{n}{normal\PYZus{}github\PYZus{}data}\PY{p}{,} \PY{n}{github\PYZus{}data\PYZus{}sample\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{normal\PYZus{}language}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      stars\_count  forks\_count  issues\_count  pull\_requests  contributors  \textbackslash{}
+0        0.000000     0.000000      1.000000       0.557319      0.003040
+1        0.272362     0.154162      0.875614       0.010582      0.107903
+2        0.000000     0.000000      0.510638       0.047619      0.234043
+3        0.000000     0.000000      0.472995       0.052910      0.659574
+4        0.000000     0.605344      0.328969       0.038801      0.101824
+{\ldots}           {\ldots}          {\ldots}           {\ldots}            {\ldots}           {\ldots}
+1047     0.002010     0.001028      0.000000       0.000000      0.000000
+1048     0.000000     0.000000      0.000000       0.000000      0.012158
+1049     0.000000     0.005139      0.000000       0.001764      0.010638
+1050     0.011055     0.005139      0.000000       0.000000      0.000000
+1051     0.004020     0.003083      0.000000       0.000000      0.000000
+
+        language
+0         CodeQL
+1           Perl
+2            C++
+3         Python
+4           Ruby
+{\ldots}          {\ldots}
+1047        Dart
+1048        HTML
+1049      Python
+1050  JavaScript
+1051  SourcePawn
+
+[1052 rows x 6 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{infos} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{normal\PYZus{}language}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n}{info} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{n}{star} \PY{o}{=} \PY{n}{normal\PYZus{}language}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{stars\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+    \PY{n}{fork} \PY{o}{=} \PY{n}{normal\PYZus{}language}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{forks\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+    \PY{n}{issue} \PY{o}{=} \PY{n}{normal\PYZus{}language}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{issues\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+    \PY{n}{pull} \PY{o}{=} \PY{n}{normal\PYZus{}language}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{pull\PYZus{}requests}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+    \PY{n}{contributor} \PY{o}{=} \PY{n}{normal\PYZus{}language}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{contributors}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+    \PY{n}{info}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{star}\PY{p}{)}
+    \PY{n}{info}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{fork}\PY{p}{)}
+    \PY{n}{info}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{issue}\PY{p}{)}
+    \PY{n}{info}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{pull}\PY{p}{)}
+    \PY{n}{info}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{contributor}\PY{p}{)}
+    \PY{n}{infos}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{info}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{normal\PYZus{}language}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{normal\PYZus{}language}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o+ow}{is} \PY{n}{NA}\PY{p}{:}
+        \PY{n}{dists} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+        \PY{k}{for} \PY{n}{j} \PY{o+ow}{in} \PY{n+nb}{len}\PY{p}{(}\PY{n}{rates}\PY{p}{)}\PY{p}{:}
+            \PY{n}{dist} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{square}\PY{p}{(}\PY{n}{infos}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{n}{infos}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+            \PY{n}{dists}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{dist}\PY{p}{)}
+        \PY{n}{idx} \PY{o}{=} \PY{n}{dists}\PY{o}{.}\PY{n}{index}\PY{p}{(}\PY{n+nb}{min}\PY{p}{(}\PY{n}{dists}\PY{p}{)}\PY{p}{)}
+        \PY{n}{github\PYZus{}data\PYZus{}sample\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{=} \PY{n}{github\PYZus{}data\PYZus{}sample\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{idx}\PY{p}{]}
+\PY{n}{github\PYZus{}data\PYZus{}sample\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+JavaScript          257
+Python              155
+HTML                 72
+Java                 44
+CSS                  42
+Dart                 38
+TypeScript           38
+C                    34
+CodeQL               33
+C++                  33
+Jupyter Notebook     29
+Ruby                 28
+Shell                25
+PHP                  17
+Go                   17
+Perl                 14
+ActionScript         12
+Swift                10
+Rust                 10
+C\#                   10
+Kotlin               10
+Vim Script            9
+CoffeeScript          9
+Pawn                  8
+Objective-C           8
+Cuda                  7
+Gherkin               7
+SCSS                  7
+Makefile              6
+SourcePawn            6
+AutoHotkey            5
+QMake                 5
+Jinja                 5
+Assembly              4
+PureBasic             4
+Hack                  4
+QML                   3
+CMake                 3
+Dockerfile            3
+HCL                   3
+Solidity              3
+Elixir                2
+Svelte                2
+Smarty                2
+Vue                   2
+PowerShell            2
+R                     1
+Less                  1
+Roff                  1
+Haskell               1
+Oz                    1
+Name: language, dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \section{四、预处理前后数据集差异比较分析}\label{ux56dbux9884ux5904ux7406ux524dux540eux6570ux636eux96c6ux5deeux5f02ux6bd4ux8f83ux5206ux6790}
+
+    \subsubsection{1.
+用最高频率值来填补缺失值除}\label{ux7528ux6700ux9ad8ux9891ux7387ux503cux6765ux586bux8865ux7f3aux5931ux503cux9664}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{language\PYZus{}counts\PYZus{}before} \PY{o}{=} \PY{n}{target\PYZus{}data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sort\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\PY{n}{language\PYZus{}counts\PYZus{}after} \PY{o}{=} \PY{n}{target\PYZus{}data\PYZus{}filled}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sort\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 合并前后填补数据，准备排序}
+\PY{n}{combined\PYZus{}counts} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{\PYZob{}}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Before Highest Frequency Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{language\PYZus{}counts\PYZus{}before}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{After Highest Frequency Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{language\PYZus{}counts\PYZus{}after}
+\PY{p}{\PYZcb{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 按照填补前的频次进行降序排序}
+\PY{n}{combined\PYZus{}counts\PYZus{}sorted} \PY{o}{=} \PY{n}{combined\PYZus{}counts}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Before Highest Frequency Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 绘制横向柱状图}
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{)}\PY{p}{)}
+\PY{n}{y\PYZus{}positions} \PY{o}{=} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{combined\PYZus{}counts\PYZus{}sorted}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{barh}\PY{p}{(}\PY{n}{y\PYZus{}positions}\PY{p}{,} \PY{n}{combined\PYZus{}counts\PYZus{}sorted}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Before Highest Frequency Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{height}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Before Highest Frequency Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{align}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{center}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{barh}\PY{p}{(}\PY{p}{[}\PY{n}{p} \PY{o}{+} \PY{l+m+mf}{0.4} \PY{k}{for} \PY{n}{p} \PY{o+ow}{in} \PY{n}{y\PYZus{}positions}\PY{p}{]}\PY{p}{,} \PY{n}{combined\PYZus{}counts\PYZus{}sorted}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{After Highest Frequency Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{height}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{After Highest Frequency Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{green}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{align}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{center}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{yticks}\PY{p}{(}\PY{p}{[}\PY{n}{p} \PY{o}{+} \PY{l+m+mf}{0.2} \PY{k}{for} \PY{n}{p} \PY{o+ow}{in} \PY{n}{y\PYZus{}positions}\PY{p}{]}\PY{p}{,} \PY{n}{combined\PYZus{}counts\PYZus{}sorted}\PY{o}{.}\PY{n}{index}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Frequency}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Language Frequency Before and After Highest Frequency Filling Missing Values}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}可以看出这种简单粗暴的缺失值填补方式，拟合效果并不是很好}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Exploratory_data_for_GitHub_Dataset_files/Exploratory_data_for_GitHub_Dataset_41_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{2.
+通过属性的相关关系来填补缺失值}\label{ux901aux8fc7ux5c5eux6027ux7684ux76f8ux5173ux5173ux7cfbux6765ux586bux8865ux7f3aux5931ux503c}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}观察缺失值填补前后，language频次的柱状图，结果表明该方法可以很好的平滑原始分布。}
+\PY{n}{language\PYZus{}counts} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{target\PYZus{}data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{)}
+\PY{n}{language\PYZus{}count\PYZus{}attr\PYZus{}corr} \PY{o}{=} \PY{n}{language\PYZus{}counts}
+\PY{n}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{*} \PY{n+nb}{len}\PY{p}{(}\PY{n}{language\PYZus{}counts}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{level} \PY{o+ow}{in} \PY{n+nb}{list}\PY{p}{(}\PY{n}{language\PYZus{}counts}\PY{o}{.}\PY{n}{index}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{level} \PY{o+ow}{in} \PY{n+nb}{list}\PY{p}{(}\PY{n}{github\PYZus{}data\PYZus{}attr\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{index}\PY{p}{)}\PY{p}{:}
+        \PY{n}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{[}\PY{n}{level}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]} \PY{o}{=} \PY{n}{github\PYZus{}data\PYZus{}attr\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{[}\PY{n}{level}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{values}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+        
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{40}\PY{p}{,} \PY{l+m+mi}{40}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{yticks}\PY{p}{(}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{24}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xticks}\PY{p}{(}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{24}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{barh}\PY{p}{(}\PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{tick\PYZus{}label}\PY{o}{=}\PY{n}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{o}{.}\PY{n}{index}\PY{p}{,} \PY{n}{width}\PY{o}{=}\PY{n}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{height}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{barh}\PY{p}{(}\PY{p}{[}\PY{n}{d}\PY{o}{+}\PY{l+m+mf}{0.42} \PY{k}{for} \PY{n}{d} \PY{o+ow}{in} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{]}\PY{p}{,} \PY{n}{tick\PYZus{}label}\PY{o}{=}\PY{n}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{o}{.}\PY{n}{index}\PY{p}{,} \PY{n}{width}\PY{o}{=}\PY{n}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language\PYZus{}count\PYZus{}attr\PYZus{}corr}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{height}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{24}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{24}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} plt.title(\PYZsq{}Number of movies for each appropriation\PYZhy{}level?\PYZsq{}, fontsize=32, loc=\PYZsq{}center\PYZsq{})}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,} \PY{n}{loc}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lower right}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Exploratory_data_for_GitHub_Dataset_files/Exploratory_data_for_GitHub_Dataset_43_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{3. 通过数据对象之间的相似性来填补缺失值
+(拟使用热卡填充法, i.e.~Hot Deck
+Imputation)}\label{ux901aux8fc7ux6570ux636eux5bf9ux8c61ux4e4bux95f4ux7684ux76f8ux4f3cux6027ux6765ux586bux8865ux7f3aux5931ux503c-ux62dfux4f7fux7528ux70edux5361ux586bux5145ux6cd5-i.e.-hot-deck-imputation}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{language\PYZus{}counts\PYZus{}before\PYZus{}simulation} \PY{o}{=} \PY{n}{language\PYZus{}counts\PYZus{}before}
+\PY{n}{language\PYZus{}counts\PYZus{}after\PYZus{}simulation} \PY{o}{=} \PY{n}{github\PYZus{}data\PYZus{}sample\PYZus{}corr}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 将两个Series合并为DataFrame以便于排序和可视化}
+\PY{n}{combined\PYZus{}counts\PYZus{}simulation} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{\PYZob{}}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Before Similarity Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{language\PYZus{}counts\PYZus{}before\PYZus{}simulation}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{After Similarity Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{language\PYZus{}counts\PYZus{}after\PYZus{}simulation}
+\PY{p}{\PYZcb{}}\PY{p}{)}\PY{o}{.}\PY{n}{sort\PYZus{}values}\PY{p}{(}\PY{n}{by}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Before Similarity Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ascending}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 绘制横向柱状图}
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+\PY{n}{y\PYZus{}positions} \PY{o}{=} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{combined\PYZus{}counts\PYZus{}simulation}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{barh}\PY{p}{(}\PY{n}{y\PYZus{}positions}\PY{p}{,} \PY{n}{combined\PYZus{}counts\PYZus{}simulation}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Before Similarity Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{height}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Before Similarity Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{align}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{center}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{barh}\PY{p}{(}\PY{p}{[}\PY{n}{p} \PY{o}{+} \PY{l+m+mf}{0.4} \PY{k}{for} \PY{n}{p} \PY{o+ow}{in} \PY{n}{y\PYZus{}positions}\PY{p}{]}\PY{p}{,} \PY{n}{combined\PYZus{}counts\PYZus{}simulation}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{After Similarity Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{height}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{After Similarity Filling}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{gray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{align}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{center}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{yticks}\PY{p}{(}\PY{p}{[}\PY{n}{p} \PY{o}{+} \PY{l+m+mf}{0.2} \PY{k}{for} \PY{n}{p} \PY{o+ow}{in} \PY{n}{y\PYZus{}positions}\PY{p}{]}\PY{p}{,} \PY{n}{combined\PYZus{}counts\PYZus{}simulation}\PY{o}{.}\PY{n}{index}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Frequency}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Language}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Language Frequency Before and After Similarity Filling Missing Values}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}这种去除缺失值的方式也比较平滑可以看出}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Exploratory_data_for_GitHub_Dataset_files/Exploratory_data_for_GitHub_Dataset_45_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
